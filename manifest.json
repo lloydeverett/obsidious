@@ -1,0 +1,10 @@
+{
+  "id": "obsidious",
+  "name": "Obsidious",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "View tasks in your markdown file as a stack of cards with a built-in pomodoro timer.",
+  "author": "Lloyd Everett",
+  "authorUrl": "https://lloydeverett.com/",
+  "isDesktopOnly": false
+}

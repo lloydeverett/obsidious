@@ -1,0 +1,9 @@
+{
+    "name": "obsidious",
+    "version": "1.0.0",
+    "source": "src/main.js",
+    "main": "main.js",
+    "devDependencies": {
+        "parcel": "latest"
+    }
+}
