@@ -1,7 +1,7 @@
 {
   "id": "obsidious",
   "name": "Obsidious",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "minAppVersion": "1.4.0",
   "description": "View tasks in your Obsidian notes as a stack of cards with a built-in pomodoro timer.",
   "author": "Lloyd Everett",
