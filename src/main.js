@@ -1,55 +1,78 @@
 
 const OBSIDIAN = "obsidian"; /* force dynamic evaluation */
-const { Plugin, ItemView, MarkdownRenderer } = require(OBSIDIAN);
+const { Plugin, ItemView, normalizePath } = require(OBSIDIAN);
 
-require('./view.js');
+const frameSrcTemplate = require('bundle-text:./frame.html');
 
-const VIEW_TYPE_READER = "alternative-reading-view";
+const VIEW_TYPE_OBSIDIOUS = "obsidious-view";
 
-module.exports = class AlternativeReadingViewPlugin extends Plugin {
+module.exports = class ObsidiousPlugin extends Plugin {
     async onload() {
         this.registerView(
-            VIEW_TYPE_READER,
-            (leaf) => new AlternativeReadingView(leaf, this.app)
+            VIEW_TYPE_OBSIDIOUS,
+            (leaf) => new ObsidiousView(leaf, this.app, this)
         );
 
-        this.addRibbonIcon("book-check", "Open Obsidious view", () => {
-            this.activateView();
+        this.addCommand({
+            id: 'open-obsidious-split',
+            name: 'Open Obsidious view for the current file',
+            callback: () => {
+                this.activateView(false);
+            },
+        });
+
+        this.addCommand({
+            id: 'open-obsidious-right',
+            name: 'Show Obsidious',
+            callback: () => {
+                this.activateView(true);
+            },
         });
     }
 
-    async activateView() {
+    async activateView(onRightLeaf) {
         const { workspace } = this.app;
 
-        // Check if view already exists
-        const existingLeaf = workspace.getLeavesOfType(VIEW_TYPE_READER)[0];
+        let leaf;
+        if (onRightLeaf) {
+            // Check if view already exists
+            const existingLeaves = workspace.getLeavesOfType(VIEW_TYPE_OBSIDIOUS);
+            for (const leaf of existingLeaves) {
+                if (leaf.getRoot().side === "right") {
+                    workspace.revealLeaf(leaf);
+                    return;
+                }
+            }
 
-        if (existingLeaf) {
-            workspace.revealLeaf(existingLeaf);
-            return;
+            // It's not there, so create it
+            leaf = workspace.getRightLeaf(false);
+            if (!leaf) return;
+            await leaf.setViewState({
+                type: VIEW_TYPE_OBSIDIOUS,
+                active: true,
+            });
+        } else {
+            leaf = this.app.workspace.splitActiveLeaf()
+            if (!leaf) return;
+            await leaf.setViewState({
+                type: VIEW_TYPE_OBSIDIOUS,
+                active: false,
+            });
         }
-
-        // Otherwise create a new one
-        const leaf = workspace.getRightLeaf(false);
-        if (!leaf) return;
-
-        await leaf.setViewState({
-            type: VIEW_TYPE_READER,
-            active: true,
-        });
 
         workspace.revealLeaf(leaf);
     }
 };
 
-class AlternativeReadingView extends ItemView {
-    constructor(leaf, app) {
+class ObsidiousView extends ItemView {
+    constructor(leaf, app, plugin) {
         super(leaf);
         this.app = app;
+        this.plugin = plugin;
     }
 
     getViewType() {
-        return VIEW_TYPE_READER;
+        return VIEW_TYPE_OBSIDIOUS;
     }
 
     getDisplayText() {
@@ -89,8 +112,20 @@ class AlternativeReadingView extends ItemView {
     async renderFile(file) {
         // const content = await this.app.vault.read(file);
 
+        const url = new URL(this.app.vault.adapter.getResourcePath(normalizePath(this.plugin.manifest.dir)));
+        url.search = '';
+        const frameSrc = frameSrcTemplate.replace(
+                             "__FRAME_BASE_HREF__",
+                             url.href + '/');
+
         if (this.containerEl.children.length === 0) {
-            this.containerEl.appendChild(document.createElement('obsidious-view'));
+            const iframe = document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.margin = 0;
+            iframe.style.padding = 0;
+            iframe.srcdoc = frameSrc;
+            this.containerEl.appendChild(iframe);
         }
     }
 
