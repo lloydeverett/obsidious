@@ -76,6 +76,10 @@ export class ObsidiousView extends LitElement {
               height: 100%;
               background: none;
               align-items: center;
+              -webkit-user-select: none;
+              -moz-user-select: none;
+              -ms-user-select: none;
+              user-select: none;
             }
 
             :host, [data-theme] {
