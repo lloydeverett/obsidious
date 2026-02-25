@@ -6,115 +6,118 @@ import daisyCSS from 'bundle-text:./daisy.css';
 
 import 'swiper/swiper-element-bundle';
 
+/**
+ * Determines whether white or black text provides better contrast for a given background color.
+ * Uses the YIQ luminance formula for perceived brightness.
+*/
+function getContrastColor(bgColor) {
+    bgColor = bgColor.startsWith('#') ? bgColor.slice(1) : bgColor;
+
+    const components = {
+        r: parseInt(bgColor.substring(0, 2), 16),
+        g: parseInt(bgColor.substring(2, 4), 16),
+        b: parseInt(bgColor.substring(4, 6), 16)
+    };
+
+    // Calculate perceived brightness (YIQ formula)
+    const brightness = (
+        (components.r * 299) +
+        (components.g * 587) +
+        (components.b * 114)
+    ) / 1000;
+
+    // Use a threshold (e.g., 128) to decide between black or white overlay text.
+    return brightness >= 128 ? 'black' : 'white';
+}
+
+const colors = [
+    "#001219",
+    "#005f73",
+    "#0a9396",
+    "#94d2bd",
+    "#e9d8a6",
+    "#ee9b00",
+    "#ca6702",
+    "#bb3e03",
+    "#ae2012",
+    "#9b2226"
+];
+
+// const colors = [
+//     "#f94144",
+//     "#f3722c",
+//     "#f8961e",
+//     "#f9844a",
+//     "#f9c74f",
+//     "#90be6d",
+//     "#43aa8b",
+//     "#4d908e",
+//     "#577590",
+//     "#277da1"
+// ]
+
+// const colors = [
+//     "#F4E9CD",
+//     "#9DBEBB",
+//     "#468189",
+//     "#98B592",
+//     "#F49D6E",
+//     "#F5D6BA",
+// ]
+
 export class ObsidiousView extends LitElement {
-    static styles = [unsafeCSS(daisyCSS), css`
-      :host {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        height: 100%;
-        padding: 12px;
-        background: none;
-        font-family: inherit;
-        align-items: center;
-      }
+    static styles = [
+        unsafeCSS(daisyCSS),
+        css`
+            :host {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              height: 100%;
+              background: none;
+              align-items: center;
+            }
 
-      @media (prefers-color-scheme: dark) {
-          :host {
-              color: white;
-          }
-      }
+            :host, [data-theme] {
+              font-family: inherit;
+              --color-primary: inherit;
+              --color-primary-content: inherit;
+              background-color: transparent;
+            }
 
-      swiper-container {
-        --width: clamp(min(200px, 100%), 60vmin, 420px);
-        --height: calc((4/3) * var(--width));
-        width: var(--width);
-        height: var(--height);
-        max-width: calc(var(--width), min(100%));
-        max-height: calc(var(--height), min(100%));
-        --bg-color-1:  #960D46;
-        --bg-color-2:  #3F3F78;
-        --bg-color-3:  #98B592; --fg-color-3:  black;
-        --bg-color-4:  #F5D6BA; --fg-color-4:  black;
-        --bg-color-5:  #F49D6E; --fg-color-5:  black;
-        --bg-color-6:  #1b4b4b;
-        --bg-color-7:  #5a293c;
-        --bg-color-8:  #468189;
-        --bg-color-9:  #9DBEBB; --fg-color-9:  black;
-        --bg-color-10: #F4E9CD; --fg-color-10: black;
-      }
+            @media (prefers-color-scheme: dark) {
+                :host {
+                    color: white;
+                }
+            }
 
-      swiper-slide {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 18px;
-        font-size: 22px;
-        font-weight: bold;
-        color: #fff;
-        user-select: none;
-      }
+            swiper-container {
+              --width: clamp(min(200px, calc(100% - 16px)), 60vmin, 420px);
+              --height: calc((4/3) * var(--width));
+              aspect-ratio: 3 / 4;
+              width: var(--width);
+            }
 
-      .swiper-slide::before {
-          display: block;
-          content: attr("data-text");
-      }
+            swiper-slide {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 18px;
+              font-size: 22px;
+              font-weight: bold;
+              color: #fff;
+              user-select: none;
+              background-color: var(--bg-color);
+              color: var(--fg-color, white);
+              box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+            }
 
-      .slide-index-1 {
-        background-color: var(--bg-color-1);
-        color:            var(--fg-color-1, white);
-      }
-
-      .slide-index-2 {
-        background-color: var(--bg-color-2);
-        color:            var(--fg-color-2, white);
-      }
-
-      .slide-index-3 {
-        background-color: var(--bg-color-3);
-        color:            var(--fg-color-3, white);
-      }
-
-      .slide-index-4 {
-        background-color: var(--bg-color-4);
-        color:            var(--fg-color-4, white);
-      }
-
-      .slide-index-5 {
-        background-color: var(--bg-color-5);
-        color:            var(--fg-color-5, white);
-      }
-
-      .slide-index-6 {
-        background-color: var(--bg-color-6);
-        color:            var(--fg-color-6, white);
-      }
-
-      .slide-index-7 {
-        background-color: var(--bg-color-7);
-        color:            var(--fg-color-7, white);
-      }
-
-      .slide-index-8 {
-        background-color: var(--bg-color-8);
-        color:            var(--fg-color-8, white);
-      }
-
-      .slide-index-9 {
-        background-color: var(--bg-color-9);
-        color:            var(--fg-color-9, white);
-      }
-
-      .slide-index-10 {
-        background-color: var(--bg-color-10);
-        color:            var(--fg-color-10, white);
-      }
-      .top-toolbar {
-          position: absolute;
-          top: 16px;
-          left: 16px;
-          right: 16px;
-      }
+            .top-toolbar {
+                position: absolute;
+                top: 16px;
+                left: 16px;
+                right: 16px;
+            }
     `];
     static properties = {
         _effect: { type: Boolean, state: true }
@@ -122,9 +125,6 @@ export class ObsidiousView extends LitElement {
     constructor() {
         super();
         this._effect = "stack";
-    }
-    handleTouchStart(e) {
-        e.stopPropagation();
     }
     handleSelectEffect(e) {
         this._effect = e.target.value;
@@ -136,11 +136,11 @@ export class ObsidiousView extends LitElement {
             "line":  '{ "slideShadows": true, "perSlideOffset": 120, "perSlideRotate":  0, "rotate": false }'
         }[this._effect];
         return html`
-            <div class="top-toolbar">
+            <div class="top-toolbar" data-theme="${document.body.getAttribute('data-theme')}">
                 <button class="btn btn-primary">WTF WHY</button>
-                <button>Random draw</button>
-                <label>
-                    <input type="checkbox" id="sounds-checkbox" />
+                <button class="btn btn-neutral">Random draw</button>
+                <label class="label">
+                    <input type="checkbox" checked="checked" class="toggle" />
                     Sounds
                 </label>
                 <label>Choose a mode:
@@ -166,13 +166,15 @@ export class ObsidiousView extends LitElement {
                       grab-cursor="true"
                       cards-effect='${effectAttribute}'
                       mousewheel='{ "enabled": true, "releaseOnEdges": false }'
-                      free-mode='{ "enabled": true, "sticky": true, "minimumVelocity": 100.0 }'
-                      @touchstart=${this.handleTouchStart}>
+                      free-mode='{ "enabled": true, "sticky": true, "minimumVelocity": 100.0 }'>
                          ${repeat(
                              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                             value => value,
-                             value => html`
-                                 <swiper-slide class="slide-index-${value}"><div>Slide ${value}</div></swiper-slide>
+                             (value) => value,
+                             (value, index) => html`
+                                 <swiper-slide
+                                   style="--bg-color: ${colors[index % colors.length]}; --fg-color: ${getContrastColor(colors[index % colors.length])};">
+                                     <div>Slide ${value}</div>
+                                 </swiper-slide>
                              `
                          )}
                     </swiper-container>

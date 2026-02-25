@@ -114,6 +114,7 @@ class ObsidiousView extends ItemView {
 
         const url = new URL(this.app.vault.adapter.getResourcePath(normalizePath(this.plugin.manifest.dir)));
         url.search = '';
+
         const frameSrc = frameSrcTemplate.replace(
                              "__FRAME_BASE_HREF__",
                              url.href + '/');
