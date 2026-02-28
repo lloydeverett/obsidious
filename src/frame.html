@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Obsidious</title>
-    <base href="__FRAME_BASE_HREF__">
     <style>
         *, *::before, *::after {
           box-sizing: border-box;
@@ -60,7 +59,12 @@
 </head>
 <body>
     <obsidious-view></obsidious-view>
-    <script type="module" src="data-url:./frame.js"></script>
+    <script type="module">
+        const script = require("bundle-text:./frame.js");
+        const scriptElement = document.createElement('script');
+        scriptElement.textContent = script;
+        document.body.appendChild(scriptElement);
+    </script>
 </body>
 </html>
 

@@ -2,7 +2,7 @@
 const OBSIDIAN = "obsidian"; /* force dynamic evaluation */
 const { Plugin, ItemView, normalizePath } = require(OBSIDIAN);
 
-const frameSrcTemplate = require('bundle-text:./frame.html');
+const frameSrc = require('bundle-text:./frame.html');
 
 const VIEW_TYPE_OBSIDIOUS = "obsidious-view";
 
@@ -114,10 +114,6 @@ class ObsidiousView extends ItemView {
 
         const url = new URL(this.app.vault.adapter.getResourcePath(normalizePath(this.plugin.manifest.dir)));
         url.search = '';
-
-        const frameSrc = frameSrcTemplate.replace(
-                             "__FRAME_BASE_HREF__",
-                             url.href + '/');
 
         if (this.containerEl.children.length === 0) {
             const iframe = document.createElement('iframe')
