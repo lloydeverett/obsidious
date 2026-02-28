@@ -1,9 +1,5 @@
-node_modules
-/main.js
-/main.js.map
-/*.js
-/*.js.map
-/*.html
+/dist
+/node_modules
 .DS_Store
 .parcel-cache
 

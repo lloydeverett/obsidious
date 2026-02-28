@@ -1,18 +1,29 @@
 {
     "name": "obsidious",
-    "source": "src/main.js",
-    "main": "main.js",
     "scripts": {
-        "build": "parcel build --public-url ./",
-        "watch": "parcel watch --no-hmr --public-url ./"
+        "build": "parcel build",
+        "postbuild": "cp manifest.json ./dist/manifest.json",
+        "watch": "npm run build && parcel watch --no-hmr",
+        "clean": "rm -rf ./dist"
     },
+    "main": "dist/main.js",
     "targets": {
         "main": {
+            "source": "src/main.js",
             "outputFormat": "commonjs",
             "includeNodeModules": {
                 "lit": true,
                 "swiper": true
-            }
+            },
+            "publicUrl": "./"
+        },
+        "web": {
+            "source": "src/frame.html",
+            "includeNodeModules": {
+                "lit": true,
+                "swiper": true
+            },
+            "publicUrl": "./"
         }
     },
     "devDependencies": {

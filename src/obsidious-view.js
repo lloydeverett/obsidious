@@ -43,28 +43,6 @@ const colors = [
     "#9b2226"
 ];
 
-// const colors = [
-//     "#f94144",
-//     "#f3722c",
-//     "#f8961e",
-//     "#f9844a",
-//     "#f9c74f",
-//     "#90be6d",
-//     "#43aa8b",
-//     "#4d908e",
-//     "#577590",
-//     "#277da1"
-// ]
-
-// const colors = [
-//     "#F4E9CD",
-//     "#9DBEBB",
-//     "#468189",
-//     "#98B592",
-//     "#F49D6E",
-//     "#F5D6BA",
-// ]
-
 export class ObsidiousView extends LitElement {
     static styles = [
         unsafeCSS(daisyCSS),
