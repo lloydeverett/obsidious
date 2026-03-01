@@ -4,6 +4,7 @@
         "build": "parcel build",
         "postbuild": "cp manifest.json ./dist/manifest.json",
         "watch": "npm run build && parcel watch --no-hmr",
+        "serve": "npm run build && parcel serve --target web",
         "clean": "rm -rf ./dist"
     },
     "main": "dist/main.js",
@@ -29,10 +30,13 @@
     "devDependencies": {
         "@parcel/optimizer-data-url": "^2.16.4",
         "@parcel/transformer-inline-string": "^2.16.4",
+        "daisyui": "^5.5.19",
         "parcel": "latest"
     },
     "dependencies": {
+        "@tailwindcss/postcss": "^4.2.1",
         "lit": "^3.3.2",
-        "swiper": "^12.1.2"
+        "swiper": "^12.1.2",
+        "tailwindcss": "^4.2.1"
     }
 }

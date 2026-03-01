@@ -1,0 +1,64 @@
+
+@import "tailwindcss";
+
+@plugin "daisyui" {
+    root: ":host"; /* select shadow root */
+    themes: false; /* inherit from document */
+    include: button, toggle, dropdown, menu, select;
+}
+
+:host {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    background: none;
+    align-items: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+:host, [data-theme] {
+    font-family: inherit;
+    color-scheme: inherit;
+    --color-primary: inherit;
+    --color-primary-content: inherit;
+    background-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+    :host {
+        color: white;
+    }
+}
+
+swiper-container {
+    --width: clamp(min(200px, calc(100% - 16px)), 60vmin, 420px);
+    --height: calc((4/3) * var(--width));
+    aspect-ratio: 3 / 4;
+    width: var(--width);
+}
+
+swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+    user-select: none;
+    background-color: var(--bg-color);
+    color: var(--fg-color, white);
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.top-toolbar {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+}
+

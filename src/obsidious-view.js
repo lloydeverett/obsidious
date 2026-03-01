@@ -1,8 +1,9 @@
 
-import { html, css, unsafeCSS, LitElement } from 'lit';
+import { html, unsafeCSS, LitElement } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { keyed } from 'lit/directives/keyed.js';
-import daisyCSS from 'bundle-text:./daisy.css';
+import { play, circlePause, rocket, dice, volumeOn, volumeOff } from './literals/icons.js';
+import * as styles from 'bundle-text:./obsidious-view.css';
 
 import 'swiper/swiper-element-bundle';
 
@@ -31,7 +32,7 @@ function getContrastColor(bgColor) {
 }
 
 const colors = [
-    "#001219",
+    "#001d29",
     "#005f73",
     "#0a9396",
     "#94d2bd",
@@ -44,109 +45,28 @@ const colors = [
 ];
 
 export class ObsidiousView extends LitElement {
-    static styles = [
-        unsafeCSS(daisyCSS),
-        css`
-            :host {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              height: 100%;
-              background: none;
-              align-items: center;
-              -webkit-user-select: none;
-              -moz-user-select: none;
-              -ms-user-select: none;
-              user-select: none;
-            }
-
-            :host, [data-theme] {
-              font-family: inherit;
-              --color-primary: inherit;
-              --color-primary-content: inherit;
-              background-color: transparent;
-            }
-
-            @media (prefers-color-scheme: dark) {
-                :host {
-                    color: white;
-                }
-            }
-
-            swiper-container {
-              --width: clamp(min(200px, calc(100% - 16px)), 60vmin, 420px);
-              --height: calc((4/3) * var(--width));
-              aspect-ratio: 3 / 4;
-              width: var(--width);
-            }
-
-            swiper-slide {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 18px;
-              font-size: 22px;
-              font-weight: bold;
-              color: #fff;
-              user-select: none;
-              background-color: var(--bg-color);
-              color: var(--fg-color, white);
-              box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-            }
-
-            .top-toolbar {
-                position: absolute;
-                top: 16px;
-                left: 16px;
-                right: 16px;
-            }
-    `];
+    static styles = [ unsafeCSS(styles) ];
     static properties = {
-        _effect: { type: Boolean, state: true }
+        _effect: { type: String, state: true },
+        _theme:  { type: String, state: true },
     };
     constructor() {
         super();
         this._effect = "stack";
-    }
-    handleSelectEffect(e) {
-        this._effect = e.target.value;
+        this._theme = "default";
     }
     render() {
-        const effectAttribute = {
-            "stack": '',
-            "fan":   '{ "slideShadows": true, "perSlideOffset":  40, "perSlideRotate": 40, "rotate": true }',
-            "line":  '{ "slideShadows": true, "perSlideOffset": 120, "perSlideRotate":  0, "rotate": false }'
-        }[this._effect];
+        const swiperElementKey = JSON.stringify([this._effect]);
+        const isEmbedded = document.documentElement.classList.contains("embedded");
         return html`
-            <div class="top-toolbar" data-theme="${document.body.getAttribute('data-theme')}">
-                <button class="btn btn-primary">WTF WHY</button>
-                <button class="btn btn-neutral">Random draw</button>
-                <label class="label">
-                    <input type="checkbox" checked="checked" class="toggle" />
-                    Sounds
-                </label>
-                <label>Choose a mode:
-                    <select @change=${this.handleSelectEffect}>
-                        <option value="stack" selected>Stack</option>
-                        <option value="fan">Fan</option>
-                        <option value="line">Line</option>
-                    </select>
-                </label>
-                <label>[TODO default running timer controls]</label>
-                <a href="https://freefrontend.com/css-code-examples/">Effect Ex.</a>
-                Pico.
-                Sounds.
-                Fix card effect bug when loop=true by looking at swiper code.
-                Music for different states.
-            </div>
-            ${keyed(
-                JSON.stringify([this._effect]),
+            ${this._effect !== "list" ? keyed(
+                swiperElementKey,
                 html`
                     <swiper-container
                       keyboard="true"
-                      effect="cards"
+                      effect='${this._effect === 'slider' ? 'slider' : 'cards'}'
                       grab-cursor="true"
-                      cards-effect='${effectAttribute}'
+                      cards-effect='${this._effect === 'line' ? '{ "slideShadows": true, "perSlideOffset": 130, "perSlideRotate":  0, "rotate": false }' : ''}'
                       mousewheel='{ "enabled": true, "releaseOnEdges": false }'
                       free-mode='{ "enabled": true, "sticky": true, "minimumVelocity": 100.0 }'>
                          ${repeat(
@@ -155,13 +75,122 @@ export class ObsidiousView extends LitElement {
                              (value, index) => html`
                                  <swiper-slide
                                    style="--bg-color: ${colors[index % colors.length]}; --fg-color: ${getContrastColor(colors[index % colors.length])};">
-                                     <div>Slide ${value}</div>
+                                     <div class="slide-content">Slide ${value}</div>
                                  </swiper-slide>
                              `
                          )}
                     </swiper-container>
                 `
-            )}
+            ) : html`
+                <div class="todo-list-wrapper">
+                    <ul class="bg-base-100 shadow-md todo-list w-full">
+                        ${repeat(
+                            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                            (value) => value,
+                            (value, index) => html`
+                                <li
+                                  class="collapse rounded-none relative"
+                                  style="--bg-color: ${colors[index % colors.length]}; --fg-color: ${getContrastColor(colors[index % colors.length])};">
+                                    <input type="radio" name="todo-list-accordion" ?checked=${index === 0} />
+                                    <div class="collapse-title h-16">
+                                        <div class="absolute inset-0 flex flex-row items-center p-4">
+                                            <div class="font-semibold">Slide ${value}</div>
+                                            <div class="flex-grow"></div>
+                                            <button class="btn btn-square btn-ghost">
+                                                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M6 3L20 12 6 21 6 3z"></path></g></svg>
+                                            </button>
+                                            <button class="btn btn-square btn-ghost">
+                                                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></g></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="collapse-content text-sm">Hello world</div>
+                                </li>`)}
+                    </ul>
+                </div>
+            `}
+            <div class="bottom-toolbar">
+                <div class="tooltip" data-tip="Random draw">
+                    <button class="btn">${dice()}</button>
+                </div>
+                <div class="tooltip" data-tip="Toggle breaks">
+                    <button class="btn join-item">${circlePause()}</button>
+                </div>
+                <div class="join">
+                  <div class="btn p-0 join-item outline-none">
+                      <select class="select select-ghost w-40 appearance-none outline-none">
+                          <option value="5">5 minutes</option>
+                          <option value="10">10 minutes</option>
+                          <option value="15">15 minutes</option>
+                          <option value="30">30 minutes</option>
+                          <option value="45">45 minutes</option>
+                          <option value="60">1 hour</option>
+                      </select>
+                  </div>
+                  <button class="btn join-item">${play()}</button>
+                  <button class="btn join-item">${rocket()}</button>
+                </div>
+            </div>
+            <div class="top-left-toolbar">
+                ${isEmbedded ? null : html`
+                    <div class="btn p-0 outline-none">
+                        <select class="select select-ghost w-32 appearance-none outline-none" @change=${(e) => {
+                            const value = e.target.value;
+                            if (value !== 'default') {
+                                document.documentElement.setAttribute('data-theme', value);
+                            } else {
+                                document.documentElement.removeAttribute('data-theme');
+                            }
+                        }}>
+                              <option value="default">Default</option>
+                              <option value="light">Light</option>
+                              <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                `}
+                <div class="join">
+                    ${repeat([
+                        { value: "stack",  label: "Cards"  },
+                     // { value: "line",   label: "Line"   },
+                        { value: "slider", label: "Slider" },
+                        { value: "list",   label: "List"   }
+                    ], (v) => v, (v) => html`
+                        <input
+                          type="radio"
+                          aria-label="${v.label}"
+                          class="btn join-item"
+                          name="effect"
+                          value="${v.value}"
+                          ?checked=${this._effect === v.value}
+                          @change=${(e) => this._effect = e.target.value} />
+                    `)}
+                </div>
+                ${/* contentDropdown("todo", "Todo", html`
+                    <div>Hello world</div>
+                    <div>default running timer controls</div>
+                    <div><a href="https://freefrontend.com/css-code-examples/">Effect Ex.</a></div>
+                    <div>Sounds.</div>
+                    <div>Fix card effect bug when loop=true by looking at swiper code.</div>
+                    <div>Music for different states.</div>
+                    <div>Rerender on Obsidian theme change</div>
+                    <div>Warn about the stack getting too big (encourage prioritisation)</div>
+                    <div>... or maybe even grey out elements > a certain index</div>
+                    <div>Palette selector</div>
+                    <div>Continuity between selections in different modes</div>
+                    <div>In Slider view, can a little button appear next to dice to loop infinitely?</div>
+                    <div>Accent color from view</div>
+                `) */ null}
+                <div class="flex-grow"></div>
+            </div>
+            <div class="top-right-toolbar">
+                <div class="btn p-0">
+                    <label class="swap swap-rotate p-4">
+                        <input type="checkbox" />
+                        ${volumeOn("swap-on")}
+                        ${volumeOff("swap-off")}
+                    </label>
+                </div>
+            </div>
         `;
     }
 }
