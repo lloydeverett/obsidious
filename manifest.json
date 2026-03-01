@@ -1,7 +1,7 @@
 {
-  "id": "obsidious",
-  "name": "Obsidious",
-  "version": "0.0.4",
+  "id": "cards-of-zeal",
+  "name": "Cards of Zeal",
+  "version": "0.0.5",
   "minAppVersion": "1.4.0",
   "description": "View tasks in your Obsidian notes as a stack of cards with a built-in pomodoro timer.",
   "author": "Lloyd Everett",

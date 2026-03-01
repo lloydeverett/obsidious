@@ -1,5 +1,5 @@
 {
-    "name": "obsidious",
+    "name": "cards-of-zeal",
     "scripts": {
         "build": "parcel build",
         "postbuild": "cp manifest.json ./dist/manifest.json",

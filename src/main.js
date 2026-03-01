@@ -4,26 +4,26 @@ const { Plugin, ItemView, normalizePath } = require(OBSIDIAN);
 
 const frameSrc = require('bundle-text:./frame.html');
 
-const VIEW_TYPE_OBSIDIOUS = "obsidious-view";
+const VIEW_TYPE_OBSIDIOUS = "cards-of-zeal-view";
 
-module.exports = class ObsidiousPlugin extends Plugin {
+module.exports = class CardsOfZealPlugin extends Plugin {
     async onload() {
         this.registerView(
             VIEW_TYPE_OBSIDIOUS,
-            (leaf) => new ObsidiousView(leaf, this.app, this)
+            (leaf) => new CardsOfZealView(leaf, this.app, this)
         );
 
         this.addCommand({
-            id: 'open-obsidious-split',
-            name: 'Open Obsidious view for the current file',
+            id: 'open-cards-of-zeal-split',
+            name: 'Open Cards of Zeal view for the current file',
             callback: () => {
                 this.activateView(false);
             },
         });
 
         this.addCommand({
-            id: 'open-obsidious-right',
-            name: 'Show Obsidious',
+            id: 'open-cards-of-zeal-right',
+            name: 'Show Cards of Zeal',
             callback: () => {
                 this.activateView(true);
             },
@@ -64,7 +64,7 @@ module.exports = class ObsidiousPlugin extends Plugin {
     }
 };
 
-class ObsidiousView extends ItemView {
+class CardsOfZealView extends ItemView {
     constructor(leaf, app, plugin) {
         super(leaf);
         this.app = app;
@@ -76,7 +76,7 @@ class ObsidiousView extends ItemView {
     }
 
     getDisplayText() {
-        return "Obsidious";
+        return "Cards of Zeal";
     }
 
     getIcon() {
@@ -85,7 +85,7 @@ class ObsidiousView extends ItemView {
 
     async onOpen() {
         this.containerEl.empty();
-        this.containerEl.addClass("obsidious-container");
+        this.containerEl.addClass("cards-of-zeal-container");
 
         const activeFile = this.app.workspace.getActiveFile();
         if (activeFile) {

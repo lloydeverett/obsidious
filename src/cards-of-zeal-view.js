@@ -3,7 +3,7 @@ import { html, unsafeCSS, LitElement } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { keyed } from 'lit/directives/keyed.js';
 import { play, circlePause, rocket, dice, volumeOn, volumeOff } from './literals/icons.js';
-import * as styles from 'bundle-text:./obsidious-view.css';
+import * as styles from 'bundle-text:./cards-of-zeal-view.css';
 
 import 'swiper/swiper-element-bundle';
 
@@ -44,7 +44,7 @@ const colors = [
     "#9b2226"
 ];
 
-export class ObsidiousView extends LitElement {
+export class CardsOfZealView extends LitElement {
     static styles = [ unsafeCSS(styles) ];
     static properties = {
         _effect: { type: String, state: true },
@@ -194,5 +194,5 @@ export class ObsidiousView extends LitElement {
         `;
     }
 }
-customElements.define('obsidious-view', ObsidiousView);
+customElements.define('cards-of-zeal-view', CardsOfZealView);
 

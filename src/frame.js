@@ -9,7 +9,7 @@ if (window.parent !== window) {
     // document.body.style.setProperty('--color-primary-content', computedParentStyles.getPropertyValue('--checkbox-marker-color'));
 }
 
-import './obsidious-view.js';
+import './cards-of-zeal-view.js';
 
-console.info('[Debug] Obsidious frame documentElement', document.documentElement);
+console.info('[Debug] Cards of Zeal frame documentElement', document.documentElement);
 
